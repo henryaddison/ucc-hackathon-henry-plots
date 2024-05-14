@@ -1,0 +1,28 @@
+#! /usr/bin/env bash
+
+eval "$(conda shell.bash hook)"
+conda activate downscaling-notebooks
+
+set -euo pipefail
+
+export DERIVED_DATA=/gws/nopw/j04/bris_climdyn/henrya/bp-backups/
+
+notebook_filepath=$1
+
+if [ $# -eq 2 ]; then # if parameters file provided
+  parameters_filepath=$2
+
+  output_dirpath="$(dirname ${notebook_filepath})/output"
+  parameters=$(basename ${parameters_filepath} .yml)
+  output_filename="$(basename ${notebook_filepath} .ipynb)-${parameters}.ipynb"
+  output_filepath=${output_dirpath}/${output_filename}
+
+  mkdir -p ${output_dirpath}
+
+  papermill ${notebook_filepath} ${output_filepath} -f ${parameters_filepath}
+else
+  output_filepath=${notebook_filepath}
+  papermill ${notebook_filepath} ${output_filepath}
+fi
+
+nbdev_clean --fname ${output_filepath}

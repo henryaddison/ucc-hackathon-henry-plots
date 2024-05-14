@@ -1,0 +1,5 @@
+mlde-utils ~=0.0.7
+nbdev ~= 2.2.0
+properscoring ~= 0.1
+python-cmethods
+xskillscore

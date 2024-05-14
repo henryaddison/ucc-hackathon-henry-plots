@@ -1,0 +1,60 @@
+split: "test"
+ensemble_members: ["01", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "15"]
+samples_per_run: 6
+data_configs:
+    CPM:
+      - fq_model_id: "score-sde/subvpsde/xarray_12em_cncsnpp_continuous/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen-no-loc-spec"
+        checkpoint: epoch_20
+        input_xfm: stan
+        label: Diffusion (cCPM)
+        dataset: "bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: False
+        CCS: True
+        color: "blue"
+        order: 10
+    GCM:
+      - fq_model_id: "score-sde/subvpsde/xarray_12em_cncsnpp_continuous/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen-no-loc-spec"
+        checkpoint: epoch_20
+        input_xfm: pixelmmsstan
+        label: Diffusion (GCM)
+        dataset: "bham_60km-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: False
+        CCS: True
+        color: "green"
+        order: 20
+sample_percentiles:
+  "CPM":
+    - label: "Median"
+      percentile:  0.5
+    # - label: "Wet day median"
+    #   percentile: 0.68 # about 18% of days have domain mean under 0.1mm/day
+    - label: "Annual max"
+      percentile: 0.9974
+  "GCM":
+    - label: "Median"
+      percentile:  0.5
+    # - label: "Wet day median"
+    #   percentile: 0.63 # about 13% of days have domain mean under 0.1mm/day
+    - label: "Annual max"
+      percentile: 0.9974
+
+desc: |
+    Multi-ensemble member models
+    Splits are based on random choice of seasons with equal number of seasons from each time slice
+
+    Compare:
+
+    ### Diffusion models
+    * PslS4T4V4 IstanTsqrturrecen no-loc-spec
+
+    ## Diff model
+
+    No loc-spec params (diff models only)
+
+    Inputs from: pressure at sea level and 4 levels of spechum, temp and vorticity
+
+    Target domain and resolution: 64x64 2.2km-4x England and Wales
+
+    Input resolution: 60km/gcmx
+
+    Input transforms are fitted on dataset in use (ie separate GCM and CPM versions) while target transform is fitted only at training on the CPM dataset

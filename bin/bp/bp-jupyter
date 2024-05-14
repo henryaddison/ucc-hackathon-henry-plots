@@ -1,0 +1,6 @@
+ #! /usr/bin/env bash
+# Run notebooks on blue pebble and open connection to them
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+${SCRIPT_DIR}/../infrastructure/local_bin/bp_jupyter --condaenv downscaling-notebooks --workdir /user/home/vf20964/code/mlde-notebooks --account=${HPC_PROJECT_CODE} --queue short,compute,cnu --memory 64 $@

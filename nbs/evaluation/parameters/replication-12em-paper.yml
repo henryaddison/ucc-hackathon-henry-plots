@@ -1,0 +1,108 @@
+split: "test"
+ensemble_members: ["01", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "15"]
+samples_per_run: 6
+data_configs:
+    CPM:
+      - fq_model_id: "score-sde/subvpsde/ukcp_local_pr_12em_cncsnpp_continuous/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen-no-loc-spec"
+        checkpoint: epoch_20
+        input_xfm: bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season-stan
+        label: Diff-cCPM paper
+        dataset: "bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: False
+        color: "orange"
+        order: 10
+      - fq_model_id: "score-sde/subvpsde/xarray_12em_cncsnpp_continuous/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen-no-loc-spec"
+        checkpoint: epoch_20
+        input_xfm: bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season-stan
+        label: Diffusion-cCPM
+        dataset: "bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: False
+        color: "blue"
+        order: 11
+      - fq_model_id: "u-net/ukcp_local_pr_unet/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen-no-loc-spec"
+        checkpoint: epoch_100
+        input_xfm: bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season-stan
+        label: U-Net-cCPM paper
+        dataset: "bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: True
+        color: "pink"
+        order: 1
+      - fq_model_id: "u-net/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen"
+        checkpoint: epoch_100
+        input_xfm: bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season-stan
+        label: U-Net-cCPM
+        dataset: "bham_gcmx-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: True
+        color: "red"
+        order: 2
+      - fq_model_id: "id-linpr"
+        checkpoint: "epoch_0"
+        input_xfm: "none"
+        label: cCPM Bilinear
+        deterministic: True
+        dataset: "bham_gcmx-4x_12em_linpr_eqvt_random-season"
+        color: "dimgrey"
+        order: 0
+    GCM:
+      - fq_model_id: "score-sde/subvpsde/ukcp_local_pr_12em_cncsnpp_continuous/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen-no-loc-spec"
+        checkpoint: epoch_20
+        input_xfm: bham_60km-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season-pixelmmsstan
+        label: Diff-GCM paper
+        dataset: "bham_60km-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: False
+        CCS: True
+        color: "yellow"
+        order: 20
+      - fq_model_id: "score-sde/subvpsde/xarray_12em_cncsnpp_continuous/bham-4x_12em_PslS4T4V4_random-season-IstanTsqrturrecen-no-loc-spec"
+        checkpoint: epoch_20
+        input_xfm: bham_60km-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season-pixelmmsstan
+        label: Diffusion-GCM
+        dataset: "bham_60km-4x_12em_psl-sphum4th-temp4th-vort4th_eqvt_random-season"
+        deterministic: False
+        CCS: True
+        color: "green"
+        order: 21
+highlighted_cpm_models: ["Diffusion-cCPM"]
+gcm_lr_lin_pr_dataset: "bham_60km-4x_12em_linpr_eqvt_random-season"
+cpm_hr_pr_dataset: "bham_gcmx-4x_12em_linpr_eqvt_random-season"
+sample_percentiles:
+  "CPM":
+    - label: "Wet"
+      percentile:  0.8
+    - label: "Wettest"
+      percentile: 1
+  "GCM":
+    - label: "Wet"
+      percentile:  0.8
+    - label: "Wettest"
+      percentile: 1
+sample_overrides:
+    CPM: {"JJA Wet": ["01", "1993-08-01 12:00:00"]}
+    GCM: {}
+
+desc: |
+    Multi-ensemble member models
+    Splits are based on random choice of seasons with equal number of seasons from each time slice
+
+    Compare:
+
+    ### Diffusion models
+    * 2 different runs of PslS4T4V4 IstanTsqrturrecen no-loc-spec
+
+    ### U-net models
+    * 1 run of PslS4T4V4 IstanTsqrturrecen no-loc-spec
+
+    ### Lo-res precip:
+    * id-linpr
+
+    ## Diff models and U-net models
+
+    No loc-spec params (diff models only)
+
+    Inputs from: pressure at sea level and 4 levels of spechum, temp and vorticity
+
+    Target domain and resolution: 64x64 2.2km-4x England and Wales
+
+    Input resolution: 60km/gcmx
+
+    Input transforms are fitted on dataset in use (ie separate GCM and CPM versions) while target transform is fitted only at training on the CPM dataset

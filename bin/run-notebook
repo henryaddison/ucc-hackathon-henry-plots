@@ -1,0 +1,23 @@
+#! /usr/bin/env bash
+
+set -euo pipefail
+
+notebook_filepath=$1
+
+output_dirpath="$(dirname ${notebook_filepath})/output"
+mkdir -p ${output_dirpath}
+
+if [ $# -eq 2 ]; then # if parameters file provided
+  parameters_filepath=$2
+
+  parameters=$(basename ${parameters_filepath} .yml)
+  output_filename="$(basename ${notebook_filepath} .ipynb)-${parameters}.ipynb"
+  output_filepath=${output_dirpath}/${output_filename}
+
+  papermill ${notebook_filepath} ${output_filepath} -f ${parameters_filepath}
+else
+  output_filepath=${output_dirpath}/$(basename ${notebook_filepath})
+  papermill ${notebook_filepath} ${output_filepath}
+fi
+
+nbdev_clean --fname ${output_filepath}

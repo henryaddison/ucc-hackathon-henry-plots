@@ -1,0 +1,5 @@
+#! /usr/bin/env bash
+
+set -euo pipefail
+
+lbatch -m 64 -a ${HPC_PROJECT_CODE} -q short,compute,cnu -t 1 --condaenv downscaling-notebooks -- bin/run-notebook $@
